@@ -1,11 +1,20 @@
 import { useState } from 'react';
 import { SquareValue, GameHistory } from './models';
 
+type GameLogic = {
+    current: GameHistory;
+    histories: GameHistory[];
+    winner: SquareValue;
+    handleMakeMove: (squareIndex: number) => void;
+    jumpTo: (step: number) => void;
+    handleNewGame: () => void;
+};
+
 /**
  * ゲームのロジックを管理するフック
  * @returns ゲームの状態と操作を提供するオブジェクト
  */
-export function useGameLogic() {
+export function useGameLogic() : GameLogic {
     const initialHistory: GameHistory[] = [
         { squares: Array(9).fill(null), xIsNext: true, step: 0 }
     ];
@@ -38,19 +47,20 @@ export function useGameLogic() {
      * @param クリックされたマスのインデックス
      */
     const handleMakeMove = (squareIndex: number) => {
-        setHistories(prevHistory => {
-            const current = prevHistory.at(-1)!;  // initialHistoryで初期化しているため
+        setHistories(prevHistories => {
+            const current = prevHistories.at(-1);
+            if (!current) throw new Error('current history is undefined');
             const isWinner = calculateWinner(current.squares);
             const isSquareFilled = current.squares[squareIndex];
             // 勝者が決まっている場合やマスが埋まっている場合は処理を行わない
-            if (isWinner || isSquareFilled) return prevHistory;
+            if (isWinner || isSquareFilled) return prevHistories;
             const newStep = current.step + 1;
             const newSquares = current.squares.map((square, index) =>
                 index === squareIndex ? (current.xIsNext ? 'X' : 'O') : square
             );
             // 新しい履歴を追加
             return [
-                ...prevHistory,
+                ...prevHistories,
                 { squares: newSquares, xIsNext: !current.xIsNext, step: newStep },
             ];
         });
@@ -73,7 +83,8 @@ export function useGameLogic() {
         setHistories(initialHistory);
     };
 
-    const current = histories.at(-1)!;
+    const current = histories.at(-1);
+    if (!current) throw new Error('current history is undefined');
     const winner = calculateWinner(current.squares);
 
     return { current, histories, winner, handleMakeMove, jumpTo, handleNewGame };

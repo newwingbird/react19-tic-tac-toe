@@ -19,7 +19,7 @@ function Game() {
         {winner && (
           <>
             <div className="winner">Winner: {winner}</div>
-            <button className="new-game" onClick={handleNewGame}>
+            <button type="button" className="new-game" onClick={handleNewGame}>
               New Game
             </button>
           </>
