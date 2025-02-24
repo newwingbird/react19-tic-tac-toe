@@ -3,7 +3,7 @@ import { renderHook, act } from '@testing-library/react';
 import { useGameLogic } from './useGameLogic';
 
 describe('useGameLogic', () => {
-    test('初期状態は正しく設定される', () => {
+    test('初期状態が正しく設定される', () => {
         const { result } = renderHook(() => useGameLogic());
         const { current, histories, winner } = result.current;
         
@@ -48,7 +48,7 @@ describe('useGameLogic', () => {
         expect(result.current.histories.length).toBe(previousLength);
     });
 
-    test('jumpToで履歴の状態が巻き戻る', () => {
+    test('jumpToHistoryで履歴の状態が巻き戻る', () => {
         const { result } = renderHook(() => useGameLogic());
         
         act(() => {
@@ -58,9 +58,9 @@ describe('useGameLogic', () => {
         expect(result.current.histories.length).toBe(3);
 
         act(() => {
-            result.current.jumpTo(1);
+            result.current.jumpToHistory(1);
         });
-        // jumpTo(1)実行後、履歴は step1までになるので配列の長さは2になる
+        // jumpTo(1)実行後、履歴は step0（初期状態） と step1までになるので配列の長さは2になる
         expect(result.current.histories.length).toBe(2);
     });
 

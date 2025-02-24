@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { SquareValue, GameHistory } from './models';
+import type { SquareValue, GameHistory, GameHitories } from './models';
 
 type GameLogic = {
     current: GameHistory;
-    histories: GameHistory[];
+    histories: GameHitories;
     winner: SquareValue;
     handleMakeMove: (squareIndex: number) => void;
-    jumpTo: (step: number) => void;
+    jumpToHistory: (step: number) => void;
     handleNewGame: () => void;
 };
 
@@ -18,7 +18,7 @@ export function useGameLogic() : GameLogic {
     const initialHistory: GameHistory[] = [
         { squares: Array(9).fill(null), xIsNext: true, step: 0 }
     ];
-    const [histories, setHistories] = useState<GameHistory[]>(initialHistory);
+    const [histories, setHistories] = useState<GameHitories>(initialHistory);
 
     /**
      * 勝者を判定する
@@ -37,10 +37,10 @@ export function useGameLogic() : GameLogic {
             [2, 4, 6],
         ];
         const winningLine = judgeLines.find(([a, b, c]) =>
-            squares[a] && squares[a] === squares[b] && squares[a] === squares[c]
+            squares[a] !== undefined && squares[a] === squares[b] && squares[a] === squares[c]
         );
-        return winningLine ? squares[winningLine[0]] : null;
-    };
+        return winningLine ? squares[winningLine[0]] : null; 
+    };  
 
     /**
      * １ターンの処理を行う
@@ -50,8 +50,8 @@ export function useGameLogic() : GameLogic {
         setHistories(prevHistories => {
             const current = prevHistories.at(-1);
             if (!current) throw new Error('current history is undefined');
-            const isWinner = calculateWinner(current.squares);
-            const isSquareFilled = current.squares[squareIndex];
+            const isWinner = calculateWinner(current.squares) !== null;
+            const isSquareFilled = current.squares[squareIndex] !== null;
             // 勝者が決まっている場合やマスが埋まっている場合は処理を行わない
             if (isWinner || isSquareFilled) return prevHistories;
             const newStep = current.step + 1;
@@ -70,7 +70,7 @@ export function useGameLogic() : GameLogic {
      * 指定したステップの履歴にジャンプ
      * @param 履歴のステップ
      */
-    const jumpTo = (step: number) => {
+    const jumpToHistory = (step: number) => {
         setHistories(prevHistory =>
             prevHistory.filter((_, index) => index <= step)
         );
@@ -87,5 +87,5 @@ export function useGameLogic() : GameLogic {
     if (!current) throw new Error('current history is undefined');
     const winner = calculateWinner(current.squares);
 
-    return { current, histories, winner, handleMakeMove, jumpTo, handleNewGame };
+    return { current, histories, winner, handleMakeMove, jumpToHistory, handleNewGame };
 }

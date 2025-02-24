@@ -7,7 +7,7 @@ import History from "./History";
  * マルバツゲームを管理表示するコンポーネント
  */
 function Game() {
-  const { current, histories, winner, handleMakeMove, jumpTo, handleNewGame } =
+  const { current, histories, winner, handleMakeMove, jumpToHistory, handleNewGame } =
     useGameLogic();
 
   return (
@@ -24,7 +24,7 @@ function Game() {
             </button>
           </>
         )}
-        <History histories={histories} jumpTo={jumpTo} />
+        <History histories={histories} jumpToHistory={jumpToHistory} />
       </div>
     </div>
   );

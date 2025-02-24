@@ -12,3 +12,8 @@ export type GameHistory = {
   xIsNext: boolean;
 };
 
+/**
+ * ゲーム盤面の履歴 
+ * - 初期状態の履歴を持つ
+ */
+export type GameHitories = GameHistory[];
