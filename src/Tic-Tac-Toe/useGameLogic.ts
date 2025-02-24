@@ -37,9 +37,10 @@ export function useGameLogic() : GameLogic {
             [2, 4, 6],
         ];
         const winningLine = judgeLines.find(([a, b, c]) =>
-            squares[a] !== undefined && squares[a] === squares[b] && squares[a] === squares[c]
+            squares[a] !== 'empty' && squares[a] === squares[b] && squares[a] === squares[c]
         );
-        return winningLine ? squares[winningLine[0]] : null; 
+        if (!winningLine) return 'empty';
+        return squares[winningLine[0]]; 
     };  
 
     /**

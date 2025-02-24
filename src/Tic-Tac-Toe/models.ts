@@ -1,7 +1,7 @@
 /**
  * マス目の状態
  */
-export type SquareValue = 'X' | 'O' | null;
+export type SquareValue = 'X' | 'O' | 'empty';
 
 /**
  * ステップ毎のゲーム盤面の履歴

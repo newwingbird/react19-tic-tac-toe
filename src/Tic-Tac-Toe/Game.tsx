@@ -16,7 +16,7 @@ function Game() {
         <Board squares={current.squares} onClick={handleMakeMove} />
       </div>
       <div className="game-info">
-        {winner && (
+        {winner != 'empty' && (
           <>
             <div className="winner">Winner: {winner}</div>
             <button type="button" className="new-game" onClick={handleNewGame}>
